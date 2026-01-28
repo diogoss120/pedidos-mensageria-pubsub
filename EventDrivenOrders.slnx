@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/Api/">
+    <Project Path="Src/Api/Order.Api/Order.Api.csproj" />
+  </Folder>
+  <Folder Name="/Itens de Solução/">
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="Src/Shared/Contracts/Contracts.csproj" />
+    <Project Path="Src/Shared/Messaging/Messaging.csproj" />
+  </Folder>
+  <Folder Name="/WorkerNotification/">
+    <Project Path="Src/WorkerNotification/Worker.Notification/WorkerNotification.csproj" />
+  </Folder>
+  <Folder Name="/WorkerPayment/">
+    <Project Path="Src/WorkerPayment/Worker.Payment/WorkerPayment.csproj" />
+  </Folder>
+</Solution>
