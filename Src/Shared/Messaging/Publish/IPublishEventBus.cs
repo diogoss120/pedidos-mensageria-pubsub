@@ -2,6 +2,6 @@
 {
     public interface IPublishEventBus
     {
-        void Publish<T>(string projectName, string topicId, T message);
+        Task Publish<T>(string projectName, string topicId, T message);
     }
 }

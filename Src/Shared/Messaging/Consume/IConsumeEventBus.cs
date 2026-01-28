@@ -2,6 +2,6 @@
 {
     public interface IConsumeEventBus
     {
-        Task<T> PublishAsync<T>(string projectId, string subscription);
+        Task ConsumeAsync<T>(string projectId, string subscriptionId, Func<T, Task> handler, CancellationToken cancellationToken);
     }
 }

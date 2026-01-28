@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Google.Cloud.PubSub.V1" Version="3.31.0" />
+  </ItemGroup>
+
 </Project>
