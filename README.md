@@ -1,6 +1,6 @@
 # Event-Driven Orders Lab 🚀
 
-Este projeto é um laboratório de engenharia de software focado em **Arquitetura Orientada a Eventos (EDA)**, **Saga Pattern** e **Resiliência**, utilizando o ecossistema Google Cloud.
+Este projeto é um laboratório de engenharia de software focado em **Arquitetura Orientada a Eventos**, **Saga Pattern** e **Resiliência**, utilizando o ecossistema Google Cloud.
 
 O objetivo principal é demonstrar padrões avançados de mensageria, garantindo desacoplamento total entre serviços e consistência eventual.
 
@@ -10,19 +10,19 @@ O objetivo principal é demonstrar padrões avançados de mensageria, garantindo
 
 O sistema segue um fluxo reativo para processamento de pedidos:
 
-1.  **API Gateway (Order.Api)**: Recebe a intenção de compra e retorna `202 Accepted` imediatamente, publicando o evento inicial.
+1.  **API Gateway (Order.Api)**: Recebe a intenção de compra e retorna `202 Accepted`, publicando o evento inicial.
 2.  **Fan-out (Paralelismo)**: O evento de pedido criado dispara simultaneamente o processamento de **Estoque**, **Pagamento** e **Envio de Notificação**.
-3.  **Orquestração de Saga**: Um componente central (ou coreográfico) monitora os estados para consolidar o pedido ou disparar ações de compensação em caso de falha.
+3.  **Orquestração de Saga**: Um componente central monitora os estados para consolidar o pedido ou disparar ações de compensação em caso de falha.
 
-```mermaid
 graph LR
-    API[Order API] -->|Publica| T1(pedido.v1.criado)
+    API[Order API] -->|Publica| T1(pedido.criado)
     T1 --> Sub1[Worker Estoque]
     T1 --> Sub2[Worker Pagamento]
-    Sub1 -->|Sucesso| T2(estoque.v1.reservado)
-    Sub2 -->|Sucesso| T3(pagamento.v1.aprovado)
-    T2 & T3 --> Saga[Orquestrador de Saga]
-```
+    T1 --> Sub3[Worker Notificacao]
+    Sub1 -->|Sucesso| T2(estoque.reservado)
+    Sub2 -->|Sucesso| T3(pagamento.aprovado)
+    Sub3 -->|Sucesso| T4(notificacao.enviada)
+    T2 & T3 & T4 --> Saga[Orquestrador de Saga]
 
 ## 🎯 Desafios Técnicos (Roadmap)
 
@@ -69,14 +69,13 @@ Todos os eventos derivam da estrutura base do pedido. O `correlationId` é obrig
 ## 🛠️ Tech Stack
 
 - **Runtime**: .NET 8/9
-- **Messaging**: Google Cloud Pub/Sub SDK (Emulator para dev local)
-- **Database**: Google Firestore & SQL Server (Isolados por serviço)
+- **Messaging**: Google Cloud Pub/Sub
+- **Database**: Google Cloud Firestore
 - **Infrastructure**: Docker & Docker Compose
 
 ## 📋 Regras de Ouro do Lab
 
 1.  **Isolamento de Dados**: Workers nunca acessam o banco de dados de outro serviço.
 2.  **Idempotência Obrigatória**: Todo consumidor verifica se o `correlationId` já foi processado.
-3.  **Contratos Versionados**: Tópicos seguem o padrão `tema.v1.evento`.
-4.  **Falhe Rápido, Recupere-se**: Uso extensivo de retries para falhas transientes.
+3.  **Falhe Rápido, Recupere-se**: Uso extensivo de retries para falhas transientes.
 
