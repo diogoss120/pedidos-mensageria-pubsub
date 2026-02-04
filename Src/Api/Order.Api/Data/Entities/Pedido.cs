@@ -1,6 +1,5 @@
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Order.Api.Data.Enum;
+using Contracts.Enums;
 
 namespace Order.Api.Data.Entities;
 

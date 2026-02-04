@@ -16,9 +16,6 @@
   <Folder Name="/WorkerNotification/">
     <Project Path="Src/WorkerNotification/Worker.Notification/WorkerNotification.csproj" />
   </Folder>
-  <Folder Name="/WorkerOrchestrator/">
-    <Project Path="Src/WorkerOrchestrator/WorkerOrchestrator/WorkerOrchestrator.csproj" Id="fad66d16-c643-4687-888e-58bade772909" />
-  </Folder>
   <Folder Name="/WorkerPayment/">
     <Project Path="Src/WorkerPayment/Worker.Payment/WorkerPayment.csproj" />
   </Folder>

@@ -1,4 +1,4 @@
-﻿namespace Order.Api.Data.Enum
+namespace Contracts.Enums
 {
     public enum StatusPedido
     {

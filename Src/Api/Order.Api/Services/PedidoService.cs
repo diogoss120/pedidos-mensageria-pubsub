@@ -20,6 +20,7 @@ namespace Order.Api.Services
             await _pedidoRepository.CreateAsync(entity);
 
             // preciso enviar o evento do pedido criado
+            var message = entity.ToMessage();
         }
 
         public async Task<IEnumerable<Data.Entities.Pedido>> GetAllAsync()
