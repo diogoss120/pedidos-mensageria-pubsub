@@ -1,6 +1,6 @@
 # Event-Driven Orders Lab 🚀
 
-Este projeto é um laboratório de engenharia de software focado em **Arquitetura Orientada a Eventos**, **Saga Pattern** e **Resiliência**, utilizando o ecossistema Google Cloud.
+Este projeto é um laboratório de engenharia de software focado em **Arquitetura Orientada a Eventos** e **Resiliência**, utilizando o ecossistema Google Cloud.
 
 O objetivo principal é demonstrar padrões avançados de mensageria, garantindo desacoplamento total entre serviços e consistência eventual.
 
@@ -12,7 +12,6 @@ O sistema segue um fluxo reativo para processamento de pedidos:
 
 1.  **API Gateway (Order.Api)**: Recebe a intenção de compra e retorna `202 Accepted`, publicando o evento inicial.
 2.  **Fan-out (Paralelismo)**: O evento de pedido criado dispara simultaneamente o processamento de **Estoque**, **Pagamento** e **Envio de Notificação**.
-3.  **Orquestração de Saga**: Um componente central monitora os estados para consolidar o pedido ou disparar ações de compensação em caso de falha.
 
 ```mermaid
 graph LR
@@ -23,7 +22,7 @@ graph LR
     Sub1 -->|Sucesso| T2(estoque.reservado)
     Sub2 -->|Sucesso| T3(pagamento.aprovado)
     Sub3 -->|Sucesso| T4(notificacao.enviada)
-    T2 & T3 & T4 --> Saga[Orquestrador de Saga]
+
 ```
 
 ## 🎯 Desafios Técnicos (Roadmap)
@@ -33,7 +32,7 @@ O projeto está estruturado em 4 níveis de complexidade crescente:
 - 🟢 **Fundamental**: Setup do Pub/Sub, publicação de eventos e consumo básico.
 - 🟡 **Resiliência**: Implementação de *Exponential Backoff*, *Dead Letter Queues (DLQ)* e **Idempotência**.
 - 🔵 **Fan-out**: Distribuição de um único evento para múltiplos consumidores independentes.
-- 🔴 **Saga Orquestrada**: Gestão de transações distribuídas e fluxos de reversão automáticos.
+
 
 ## 📦 Single Source of Truth (Pedido Mock)
 
