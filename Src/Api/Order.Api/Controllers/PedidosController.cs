@@ -23,15 +23,34 @@ namespace Order.Api.Controllers
         {
             var result = _validator.Validate(pedido);
 
-            if(!result.IsValid)
+            if (!result.IsValid)
             {
-                var erros = result.Errors.Select(e => new {e.PropertyName, e.ErrorMessage});
+                var erros = result.Errors.Select(e => new { e.PropertyName, e.ErrorMessage });
                 return BadRequest(erros);
             }
 
             await _pedidoService.ProcessarPedido(pedido);
 
             return Accepted();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPedidos()
+        {
+            var pedidos = await _pedidoService.GetAllAsync();
+            return Ok(pedidos);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPedidoById(Guid id)
+        {
+            var pedido = await _pedidoService.GetByIdAsync(id);
+            if (pedido == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(pedido);
         }
     }
 }

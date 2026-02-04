@@ -12,7 +12,11 @@ public class Pedido
 
     public StatusPedido Status { get; set; }
 
-    public decimal Total { get => Itens.Sum(i => i.Quantidade); }
+    public decimal Total
+    {
+        get => Itens.Sum(i => i.Preco);
+        private set { }
+    }
 
     public Cliente Cliente { get; set; } = new();
 

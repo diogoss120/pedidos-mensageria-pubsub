@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Options;
 using FluentValidation;
+using MongoDB.Driver;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -20,7 +22,20 @@ builder.Services.AddProblemDetails();
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDbSettings"));
 
-builder.Services.AddSingleton<IPedidoRepository, PedidoRepository>();
+builder.Services.AddSingleton<IMongoClient>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+    return new MongoClient(settings.ConnectionString);
+});
+
+builder.Services.AddSingleton<IMongoDatabase>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+    var client = sp.GetRequiredService<IMongoClient>();
+    return client.GetDatabase(settings.DatabaseName);
+});
+
+builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 
 // Configure Guid to be stored as Standard definition in MongoDB
 BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
