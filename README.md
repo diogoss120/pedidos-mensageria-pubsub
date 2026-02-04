@@ -14,6 +14,7 @@ O sistema segue um fluxo reativo para processamento de pedidos:
 2.  **Fan-out (Paralelismo)**: O evento de pedido criado dispara simultaneamente o processamento de **Estoque**, **Pagamento** e **Envio de Notificação**.
 3.  **Orquestração de Saga**: Um componente central monitora os estados para consolidar o pedido ou disparar ações de compensação em caso de falha.
 
+```mermaid
 graph LR
     API[Order API] -->|Publica| T1(pedido.criado)
     T1 --> Sub1[Worker Estoque]
@@ -23,6 +24,7 @@ graph LR
     Sub2 -->|Sucesso| T3(pagamento.aprovado)
     Sub3 -->|Sucesso| T4(notificacao.enviada)
     T2 & T3 & T4 --> Saga[Orquestrador de Saga]
+```
 
 ## 🎯 Desafios Técnicos (Roadmap)
 
