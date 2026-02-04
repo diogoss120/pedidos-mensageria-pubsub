@@ -43,6 +43,7 @@ docker-compose.local.yml
 
 # Docker local volumes
 data/
+!Src/**/Data/
 volumes/
 .docker/
 
