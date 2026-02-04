@@ -1,0 +1,142 @@
+###############################################
+# .NET / C#                                   #
+###############################################
+
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+out/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# ASP.NET Core
+*.dbmdl
+*.dbproj.schemaview
+
+# User-specific files
+*.rsuser
+*.psess
+*.vsp
+*.vspscc
+*.vssscc
+
+###############################################
+# Docker                                       #
+###############################################
+
+# Docker artifacts
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Docker local volumes
+data/
+volumes/
+.docker/
+
+# Logs gerados pelos containers
+*.log
+logs/
+*/logs/
+
+###############################################
+# Banco de Dados                               #
+###############################################
+
+# MDF / LDF (Local DB)
+*.mdf
+*.ldf
+
+# SQL Server Data / Backups
+*.bak
+*.trn
+
+###############################################
+# Configurações sensíveis                      #
+###############################################
+
+# AppSettings exceto o padrão
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.json
+
+# NÃO ignorar appsettings.json
+!appsettings.json
+
+# Certificados
+*.pfx
+*.p12
+*.key
+
+###############################################
+# Arquivos temporários e de cache              #
+###############################################
+
+# General
+*.tmp
+*.temp
+*.cache
+*.pid
+*.csv~
+*~
+
+# NuGet
+*.nupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+
+###############################################
+# Logs                                         #
+###############################################
+
+*.log
+logs/
+logs/**/*.log
+
+###############################################
+# Ferramentas / Outras IDEs                    #
+###############################################
+
+# ReSharper
+_ReSharper*/
+_ReSharper.Caches/
+
+# dotCover
+.idea/
+*.dotCover
+*.coverage
+*.coveragexml
+
+
+###############################################
+# Outras pastas comuns                         #
+###############################################
+
+# Dumps
+*.dmp
+*.mdmp
+*.stackdump
+
+# Pastas gerais
+temp/
+tmp/
+cache/
+
+# AI Agent Instructions
+.agent/
+.cursorrules

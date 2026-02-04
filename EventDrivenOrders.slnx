@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/Api/">
+    <Project Path="Src/Api/Order.Api/Order.Api.csproj" />
+  </Folder>
+  <Folder Name="/Itens de Solução/">
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="Src/Shared/Contracts/Contracts.csproj" />
+    <Project Path="Src/Shared/Messaging/Messaging.csproj" />
+  </Folder>
+  <Folder Name="/WorkerInventory/">
+    <Project Path="Src/WorkerInventory/WorkerInventory/WorkerInventory.csproj" Id="9ac24b2b-b6a5-47f4-8aaa-a763ff196728" />
+  </Folder>
+  <Folder Name="/WorkerNotification/">
+    <Project Path="Src/WorkerNotification/Worker.Notification/WorkerNotification.csproj" />
+  </Folder>
+  <Folder Name="/WorkerOrchestrator/">
+    <Project Path="Src/WorkerOrchestrator/WorkerOrchestrator/WorkerOrchestrator.csproj" Id="fad66d16-c643-4687-888e-58bade772909" />
+  </Folder>
+  <Folder Name="/WorkerPayment/">
+    <Project Path="Src/WorkerPayment/Worker.Payment/WorkerPayment.csproj" />
+  </Folder>
+</Solution>
