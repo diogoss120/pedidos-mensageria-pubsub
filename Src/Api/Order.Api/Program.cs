@@ -10,8 +10,15 @@ using Order.Api.Data.Settings;
 using Order.Api.Services;
 using Order.Api.Services.Interfaces;
 using Order.Api.Validators;
+using Messaging;
+using Order.Api.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOptions();
+builder.Services.Configure<PubSubConfig>(builder.Configuration.GetSection(PubSubConfig.SectionName));
+
+builder.Services.AddMessaging();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

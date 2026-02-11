@@ -2,35 +2,37 @@
 using Order.Api.Dtos;
 using Order.Api.Services.Interfaces;
 using Order.Api.Mappers;
+using Messaging.Publish;
+using Microsoft.Extensions.Options;
+using Order.Api.Configuration;
 
 namespace Order.Api.Services
 {
-    public class PedidoService : IPedidoService
+    public class PedidoService(
+        IPedidoRepository pedidoRepository,
+        IPublishEventBus publisher,
+        IOptions<PubSubConfig> pubSubConfig) : IPedidoService
     {
-        private readonly IPedidoRepository _pedidoRepository;
-
-        public PedidoService(IPedidoRepository pedidoRepository)
-        {
-            _pedidoRepository = pedidoRepository;
-        }
-
         public async Task ProcessarPedido(PedidoDto pedido)
         {
             var entity = pedido.ToEntity();
-            await _pedidoRepository.CreateAsync(entity);
+            await pedidoRepository.CreateAsync(entity);
 
-            // preciso enviar o evento do pedido criado
             var message = entity.ToMessage();
+
+            await publisher.Publish(pubSubConfig.Value.ProjectId,
+                pubSubConfig.Value.TopicId,    
+                message);
         }
 
         public async Task<IEnumerable<Data.Entities.Pedido>> GetAllAsync()
         {
-            return await _pedidoRepository.GetAllAsync();
+            return await pedidoRepository.GetAllAsync();
         }
 
         public async Task<Data.Entities.Pedido?> GetByIdAsync(Guid id)
         {
-            return await _pedidoRepository.GetByIdAsync(id);
+            return await pedidoRepository.GetByIdAsync(id);
         }
     }
 }

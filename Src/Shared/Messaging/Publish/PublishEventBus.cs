@@ -8,7 +8,7 @@ namespace Messaging.Publish
     {
         private readonly ConcurrentDictionary<string, PublisherClient> _publisher = new();
 
-        public async Task Publish<T>(string projectId, string topicId, T message)
+        public async Task<string> Publish<T>(string projectId, string topicId, T message)
         {
             var key = $"{projectId}:{topicId}";
 
@@ -17,7 +17,7 @@ namespace Messaging.Publish
                 _ => CreatePublisher(projectId, topicId).GetAwaiter().GetResult()
             );
 
-            await publisher.PublishAsync(JsonSerializer.Serialize(message));
+            return await publisher.PublishAsync(JsonSerializer.Serialize(message));
         }
 
         private static async Task<PublisherClient> CreatePublisher(
