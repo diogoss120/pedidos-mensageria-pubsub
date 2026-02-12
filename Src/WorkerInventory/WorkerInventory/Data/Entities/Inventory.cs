@@ -1,13 +1,9 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+using Shared.Data.Entities;
 
 namespace WorkerInventory.Data.Entities;
 
-public class Inventory
+public class Inventory : EntityBase
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.String)]
-    public Guid Id { get; set; }
 
     public Guid ProdutoId { get; set; }
     public int Quantidade { get; set; }

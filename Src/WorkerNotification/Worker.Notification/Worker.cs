@@ -16,12 +16,7 @@ namespace WorkerNotification
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                if (logger.IsEnabled(LogLevel.Information))
-                {
-                    logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                }
-
-                await Task.Delay(1000, stoppingToken);
+                logger.LogInformation("WorkerNotification running at: {time}", DateTimeOffset.Now);
 
                 await consumeEventBus.ConsumeAsync<PedidoCriado>(
                     pubSubConfig.Value.ProjectId,

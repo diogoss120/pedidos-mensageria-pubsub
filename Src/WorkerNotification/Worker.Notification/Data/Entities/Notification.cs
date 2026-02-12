@@ -1,13 +1,9 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+using Shared.Data.Entities;
 
 namespace WorkerNotification.Data.Entities;
 
-public class Notification
+public class Notification : EntityBase
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.String)]
-    public Guid Id { get; set; }
 
     public Guid PedidoId { get; set; }
     public string? ClienteNome { get; set; }

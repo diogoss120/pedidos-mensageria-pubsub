@@ -1,15 +1,10 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+using Shared.Data.Entities;
 using Contracts.Enums;
 
 namespace Order.Api.Data.Entities;
 
-public class Pedido
+public class Pedido : EntityBase
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.String)]
-    public Guid Id { get; set; }
-
     public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
 
     public StatusPedido Status { get; set; }

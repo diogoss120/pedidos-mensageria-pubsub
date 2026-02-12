@@ -1,13 +1,9 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+using Shared.Data.Entities;
 
 namespace WorkerPayment.Data.Entities;
 
-public class Payment
+public class Payment : EntityBase
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.String)]
-    public Guid Id { get; set; }
 
     public Guid PedidoId { get; set; }
     public decimal Valor { get; set; }
