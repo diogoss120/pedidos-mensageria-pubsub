@@ -1,3 +1,4 @@
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Contracts.Enums;
 
@@ -5,7 +6,9 @@ namespace Order.Api.Data.Entities;
 
 public class Pedido
 {
-    [BsonId] public Guid Id { get; set; }
+    [BsonId]
+    [BsonRepresentation(BsonType.String)]
+    public Guid Id { get; set; }
 
     public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
 

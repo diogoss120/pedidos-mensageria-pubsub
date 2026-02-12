@@ -10,7 +10,7 @@ public class NotificationRepository : INotificationRepository
 
     public NotificationRepository(IMongoDatabase database)
     {
-        _notificationsCollection = database.GetCollection<Notification>("Notifications");
+        _notificationsCollection = database.GetCollection<Notification>("Notificacoes");
     }
 
     public async Task CreateAsync(Notification notification)
