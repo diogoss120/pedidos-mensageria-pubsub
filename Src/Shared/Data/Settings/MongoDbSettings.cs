@@ -1,4 +1,4 @@
-namespace Order.Api.Data.Settings;
+namespace Shared.Data.Settings;
 
 public class MongoDbSettings
 {

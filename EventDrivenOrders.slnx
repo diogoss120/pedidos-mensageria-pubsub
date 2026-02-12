@@ -8,6 +8,7 @@
   </Folder>
   <Folder Name="/Shared/">
     <Project Path="Src/Shared/Contracts/Contracts.csproj" />
+    <Project Path="Src/Shared/Data/Shared.Data.csproj" />
     <Project Path="Src/Shared/Messaging/Messaging.csproj" />
   </Folder>
   <Folder Name="/WorkerInventory/">

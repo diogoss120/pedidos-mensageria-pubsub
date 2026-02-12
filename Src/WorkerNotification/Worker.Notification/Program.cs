@@ -4,13 +4,9 @@ using WorkerNotification.Services;
 using Messaging;
 using WorkerNotification.Configuration;
 using WorkerNotification.Services.Interfaces;
-using WorkerNotification.Data.Settings;
-using MongoDB.Driver;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
-using MongoDB.Bson;
 using WorkerNotification.Data.Repositories.Interfaces;
 using WorkerNotification.Data.Repositories;
+using Shared.Data.Extensions;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -22,24 +18,7 @@ builder.Services.AddSingleton<IEmailNotificationService, EmailNotificationServic
 builder.Services.AddSingleton<INotificationService, NotificationService>();
 
 // MongoDB
-builder.Services.Configure<MongoDbSettings>(
-    builder.Configuration.GetSection("MongoDbSettings"));
-
-builder.Services.AddSingleton<IMongoClient>(sp =>
-{
-    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
-    return new MongoClient(settings.ConnectionString);
-});
-
-builder.Services.AddSingleton<IMongoDatabase>(sp =>
-{
-    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
-    var client = sp.GetRequiredService<IMongoClient>();
-    return client.GetDatabase(settings.DatabaseName);
-});
-
-// Configure Guid to be stored as Standard definition in MongoDB
-BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+builder.Services.AddMongoDb(builder.Configuration);
 
 builder.Services.AddSingleton<INotificationRepository, NotificationRepository>();
 
