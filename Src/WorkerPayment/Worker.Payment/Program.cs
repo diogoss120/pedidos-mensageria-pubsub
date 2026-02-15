@@ -2,6 +2,11 @@ using WorkerPayment;
 using Shared.Data.Extensions;
 
 using Messaging;
+using WorkerPayment.Data.Repositories.Interfaces;
+using WorkerPayment.Services.Interfaces;
+using WorkerPayment.Data.Repositories;
+using WorkerPayment.Services;
+using WorkerPayment.Configuration;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddMessaging();
@@ -10,7 +15,7 @@ builder.Services.AddMessaging();
 builder.Services.AddMongoDb(builder.Configuration);
 
 // PubSub
-var pubSubConfig = builder.Configuration.GetSection("PubSubConfig").Get<WorkerPayment.Configuration.PubSubConfig>();
+var pubSubConfig = builder.Configuration.GetSection("PubSubConfig").Get<PubSubConfig>();
 
 if (pubSubConfig is null)
 {
@@ -19,8 +24,9 @@ if (pubSubConfig is null)
 
 builder.Services.AddSingleton(pubSubConfig);
 
-builder.Services.AddSingleton<WorkerPayment.Data.Repositories.Interfaces.IPaymentRepository, WorkerPayment.Data.Repositories.PaymentRepository>();
-builder.Services.AddSingleton<WorkerPayment.Services.Interfaces.IPaymentService, WorkerPayment.Services.PaymentService>();
+builder.Services.AddSingleton<IPaymentGateway, PaymentGateway>();
+builder.Services.AddSingleton<IPaymentRepository, PaymentRepository>();
+builder.Services.AddSingleton<IPaymentService, PaymentService>();
 
 builder.Services.AddHostedService<Worker>();
 

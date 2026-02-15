@@ -19,7 +19,7 @@ namespace WorkerPayment
             {
                 logger.LogInformation("WorkerPayment running at: {time}", DateTimeOffset.Now);
 
-                await consumeEventBus.ConsumeAsync<Contracts.Messages.PedidoCriado>(
+                await consumeEventBus.ConsumeAsync<PedidoCriado>(
                     pubSubConfig.Value.ProjectId,
                     pubSubConfig.Value.SubscriptionId,
                     ProcessarPagamento,

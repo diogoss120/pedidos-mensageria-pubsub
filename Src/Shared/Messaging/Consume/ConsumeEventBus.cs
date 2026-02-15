@@ -40,7 +40,6 @@ namespace Messaging.Consume
                 }
                 catch
                 {
-                    // log aqui se quiser
                     return SubscriberClient.Reply.Nack;
                 }
             });
