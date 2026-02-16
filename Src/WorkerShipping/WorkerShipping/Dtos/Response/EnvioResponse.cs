@@ -1,3 +1,5 @@
+using WorkerShipping.Data.Enums;
+
 namespace WorkerShipping.Dtos.Response;
 
-public record EnvioResponse(bool Sucesso, string TrackingCode, string Mensagem);
+public record EnvioResponse(ShippingStatus Status, string TrackingCode, string Mensagem);

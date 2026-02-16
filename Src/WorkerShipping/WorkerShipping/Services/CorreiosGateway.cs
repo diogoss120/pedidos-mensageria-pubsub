@@ -3,6 +3,7 @@ using Polly.Fallback;
 using Polly.Retry;
 using WorkerShipping.Dtos.Request;
 using WorkerShipping.Dtos.Response;
+using WorkerShipping.Data.Enums;
 using WorkerShipping.Services.Interfaces;
 
 namespace WorkerShipping.Services;
@@ -21,7 +22,7 @@ public class CorreiosGateway : ICorreiosGateway
             if (result == 0)
             {
                 var trackingCode = $"BR{envio.PedidoId.ToString().Substring(0, 8).ToUpper()}Correios";
-                return new EnvioResponse(true, trackingCode, "Envio registrado nos Correios com sucesso.");
+                return new EnvioResponse(ShippingStatus.Despachado, trackingCode, "Envio registrado nos Correios com sucesso.");
             }
 
             // Simula um timeout
@@ -41,7 +42,7 @@ public class CorreiosGateway : ICorreiosGateway
 
             FallbackAction = args =>
             {
-                return ValueTask.FromResult(Outcome.FromResult(new EnvioResponse(false, string.Empty, "Falha na comunicação com os Correios. Tente novamente mais tarde.")));
+                return ValueTask.FromResult(Outcome.FromResult(new EnvioResponse(ShippingStatus.ErroTecnico, string.Empty, "Falha na comunicação com os Correios. Tente novamente mais tarde.")));
             }
         };
 

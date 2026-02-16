@@ -3,6 +3,9 @@ using WorkerShipping.Data.Repositories.Interfaces;
 using WorkerShipping.Mappers;
 using WorkerShipping.Services.Interfaces;
 
+using WorkerShipping.Data.Enums;
+using WorkerShipping.Services;
+
 namespace WorkerShipping.Services;
 
 public class EnvioService(
@@ -22,7 +25,7 @@ public class EnvioService(
 
         await envioRepository.CreateAsync(envio);
 
-        if (response.Sucesso)
+        if (response.Status == ShippingStatus.Despachado)
         {
             logger.LogInformation("Envio do pedido {PedidoId} criado com código de rastreio {CodigoRastreio}", pagamento.PedidoId, envio.CodigoRastreio);
         }

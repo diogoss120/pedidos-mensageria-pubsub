@@ -2,6 +2,7 @@ using Contracts.Messages;
 using WorkerShipping.Data.Entities;
 using WorkerShipping.Dtos.Request;
 using WorkerShipping.Dtos.Response;
+using WorkerShipping.Data.Enums;
 
 namespace WorkerShipping.Mappers;
 
@@ -23,10 +24,9 @@ public static class EnvioMapper
     {
         return new Envio
         {
-            Id = Guid.NewGuid(),
             PedidoId = pagamento.PedidoId,
             CodigoRastreio = resultado.TrackingCode ?? string.Empty,
-            Status = resultado.Sucesso ? "Enviado" : "Falha",
+            Status = resultado.Status,
             Detalhes = resultado.Mensagem,
             DataPostagem = DateTime.UtcNow
         };
