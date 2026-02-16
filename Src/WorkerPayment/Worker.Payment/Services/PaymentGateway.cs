@@ -1,6 +1,8 @@
 ﻿using WorkerPayment.Dtos.Request;
 using WorkerPayment.Dtos.Response;
 using WorkerPayment.Services.Interfaces;
+using WorkerPayment.Data.Enums;
+
 using Polly;
 using Polly.Fallback;
 using Polly.Retry;
@@ -21,12 +23,12 @@ namespace WorkerPayment.Services
 
                 if (result == 0)
                 {
-                    return new PaymentResponse(true, "Pagamento processado com sucesso");
+                    return new PaymentResponse(PaymentStatus.Aprovado, "Pagamento processado com sucesso");
                 }
 
                 if (result == 1)
                 {
-                    return new PaymentResponse(false, "Falha ao processar pagamento: Saldo insuficiente");
+                    return new PaymentResponse(PaymentStatus.Recusado, "Falha ao processar pagamento: Saldo insuficiente");
                 }
 
                 // Simula um timeout
@@ -46,7 +48,7 @@ namespace WorkerPayment.Services
 
                 FallbackAction = args =>
                 {
-                    return ValueTask.FromResult(Outcome.FromResult(new PaymentResponse(false, "Erro técnico persistente (Gateway fora do ar). Favor processar manualmente.")));
+                    return ValueTask.FromResult(Outcome.FromResult(new PaymentResponse(PaymentStatus.ErroTecnico, "Erro técnico persistente (Gateway fora do ar). Favor processar manualmente.")));
                 }
             };
 

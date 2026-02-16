@@ -2,6 +2,8 @@ using Contracts.Messages;
 using WorkerPayment.Data.Entities;
 using WorkerPayment.Dtos.Request;
 using WorkerPayment.Dtos.Response;
+using WorkerPayment.Data.Enums;
+
 
 namespace WorkerPayment.Mappers
 {
@@ -24,7 +26,7 @@ namespace WorkerPayment.Mappers
             {
                 PedidoId = pedido.PedidoId,
                 Valor = pedido.Itens.Sum(i => i.Quantidade * i.Preco),
-                Status = resultado.Resultado ? "Aprovado" : "Recusado",
+                Status = resultado.Status,
                 Detalhes = resultado.Detalhe,
                 DataProcessamento = DateTime.Now
             };
@@ -36,7 +38,7 @@ namespace WorkerPayment.Mappers
             {
                 PedidoId = payment.PedidoId,
                 Valor = payment.Valor,
-                Status = payment.Status ?? string.Empty,
+                Status = payment.Status.ToString(),
                 Detalhes = payment.Detalhes ?? string.Empty,
                 DataProcessamento = payment.DataProcessamento
             };
