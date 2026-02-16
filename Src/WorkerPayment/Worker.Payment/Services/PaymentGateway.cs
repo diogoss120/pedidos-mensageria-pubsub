@@ -12,7 +12,7 @@ namespace WorkerPayment.Services
         // Pipeline estático para evitar recriação a cada requisição
         private static readonly ResiliencePipeline<PaymentResponse> _pipeline = CreatePipeline();
 
-        public async Task<PaymentResponse> ProcessarPagamento(PagamentoDto pagamento)
+        public async Task<PaymentResponse> ProcessarPagamentoAsync(PagamentoDto pagamento)
         {
             return await _pipeline.ExecuteAsync(async token =>
             {

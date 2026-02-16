@@ -20,15 +20,26 @@ namespace WorkerNotification
 
                 await consumeEventBus.ConsumeAsync<PedidoCriado>(
                     pubSubConfig.Value.ProjectId,
-                    pubSubConfig.Value.SubscriptionId,
+                    pubSubConfig.Value.SubscriptionIdPedidoCriado,
                     NotificarPedidoCriado,
+                    stoppingToken);
+
+                await consumeEventBus.ConsumeAsync<PagamentoProcessado>(
+                    pubSubConfig.Value.ProjectId,
+                    pubSubConfig.Value.SubscriptionIdPagamentoProcessado,
+                    NotificarPagamentoProcessado,
                     stoppingToken);
             }
         }
 
         private async Task NotificarPedidoCriado(PedidoCriado message)
         {
-            await notificationService.ProcessarPedidoCriadoAsync(message);
+            await notificationService.NotificarPedidoCriadoAsync(message);
+        }
+
+        private async Task NotificarPagamentoProcessado(PagamentoProcessado message)
+        {
+            await notificationService.NotificarPagamentoProcessadoAsync(message);
         }
     }
 }

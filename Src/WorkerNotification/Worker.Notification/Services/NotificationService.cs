@@ -10,19 +10,33 @@ namespace WorkerNotification.Services
         IEmailNotificationService emailNotificationService,
         INotificationRepository notificationRepository) : INotificationService
     {
-        public async Task ProcessarPedidoCriadoAsync(PedidoCriado message)
+        public async Task NotificarPedidoCriadoAsync(PedidoCriado message)
         {
             logger.LogInformation("Pedido {pedidoId} foi criado com sucesso", message.PedidoId);
             
-            await emailNotificationService.NotificarAsync(message);
+            var notificacao = await emailNotificationService.NotificarAsync(message);
             
             await notificationRepository.CreateAsync(new Notification
             {
                 PedidoId = message.PedidoId,
-                ClienteNome = message.Cliente.Nome,
-                ConteudoEmail = $"Pedido {message.PedidoId} criado com sucesso - notificação enviada ao cliente",
+                ConteudoEmail = notificacao,
                 DataEnvio = DateTime.Now
             });
         }
+
+        public async Task NotificarPagamentoProcessadoAsync(PagamentoProcessado message)
+        {
+            logger.LogInformation("O pagamento do pedido {pedidoId} foi {Resultado}", message.PedidoId, message.Status);
+
+            var notificacao = await emailNotificationService.NotificarAsync(message);
+
+            await notificationRepository.CreateAsync(new Notification
+            {
+                PedidoId = message.PedidoId,
+                ConteudoEmail = notificacao,
+                DataEnvio = DateTime.Now
+            });
+        }
+
     }
 }

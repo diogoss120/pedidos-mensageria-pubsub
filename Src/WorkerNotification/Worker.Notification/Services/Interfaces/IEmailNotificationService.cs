@@ -4,6 +4,7 @@ namespace WorkerNotification.Services.Interfaces
 {
     public interface IEmailNotificationService
     {
-        Task NotificarAsync(PedidoCriado pedido);
+        Task<string> NotificarAsync(PedidoCriado pedido);
+        Task<string> NotificarAsync(PagamentoProcessado pedido);
     }
 }

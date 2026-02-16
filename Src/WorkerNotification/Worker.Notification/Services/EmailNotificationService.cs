@@ -6,7 +6,7 @@ namespace WorkerNotification.Services
 {
     public class EmailNotificationService(ILogger<EmailNotificationService> logger) : IEmailNotificationService
     {
-        public Task NotificarAsync(PedidoCriado pedido)
+        public Task<string> NotificarAsync(PedidoCriado pedido)
         {
             var sb = new StringBuilder();
             sb.AppendLine($"Olá, {pedido.Cliente.Nome},");
@@ -26,7 +26,30 @@ namespace WorkerNotification.Services
 
             logger.LogWarning("\n\n{EmailContent}", sb.ToString());
 
-            return Task.CompletedTask;
+            return Task.FromResult(sb.ToString());
+        }
+
+        public Task<string> NotificarAsync(PagamentoProcessado pedido)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Olá,");
+            sb.AppendLine($"O pagamento do pedido {pedido.PedidoId} foi processado.");
+            sb.AppendLine($"Valor: R$ {pedido.Valor:N2}");
+            sb.AppendLine($"Status: {pedido.Status}");
+            sb.AppendLine($"Data: {pedido.DataProcessamento}");
+
+            if (!string.IsNullOrWhiteSpace(pedido.Detalhes))
+            {
+                sb.AppendLine($"Detalhes: {pedido.Detalhes}");
+            }
+
+            sb.AppendLine();
+            sb.AppendLine("Atenciosamente,");
+            sb.AppendLine("Equipe EventDrivenOrders");
+
+            logger.LogWarning("\n\n{EmailContent}", sb.ToString());
+
+            return Task.FromResult(sb.ToString());
         }
     }
 }

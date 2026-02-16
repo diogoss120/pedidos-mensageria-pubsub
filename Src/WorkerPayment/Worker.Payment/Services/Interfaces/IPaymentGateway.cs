@@ -5,6 +5,6 @@ namespace WorkerPayment.Services.Interfaces
 {
     public interface IPaymentGateway
     {
-        Task<PaymentResponse> ProcessarPagamento(PagamentoDto pagamento);
+        Task<PaymentResponse> ProcessarPagamentoAsync(PagamentoDto pagamento);
     }
 }

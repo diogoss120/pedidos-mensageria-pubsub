@@ -22,7 +22,7 @@ namespace WorkerPayment.Services
 
             var pagamento = PaymentMapper.ToPagamentoDto(pedidoCriado);
 
-            var result = await paymentGateway.ProcessarPagamento(pagamento);
+            var result = await paymentGateway.ProcessarPagamentoAsync(pagamento);
 
             var payment = PaymentMapper.ToPaymentEntity(pedidoCriado, result);
 

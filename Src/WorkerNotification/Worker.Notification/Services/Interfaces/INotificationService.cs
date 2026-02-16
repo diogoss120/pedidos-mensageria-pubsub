@@ -4,6 +4,8 @@ namespace WorkerNotification.Services.Interfaces
 {
     public interface INotificationService
     {
-        Task ProcessarPedidoCriadoAsync(PedidoCriado message);
+        Task NotificarPedidoCriadoAsync(PedidoCriado message);
+
+        Task NotificarPagamentoProcessadoAsync(PagamentoProcessado message);
     }
 }
