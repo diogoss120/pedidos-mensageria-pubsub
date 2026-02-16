@@ -1,26 +1,77 @@
 ﻿using WorkerPayment.Dtos.Request;
 using WorkerPayment.Dtos.Response;
 using WorkerPayment.Services.Interfaces;
+using Polly;
+using Polly.Fallback;
+using Polly.Retry;
 
 namespace WorkerPayment.Services
 {
     public class PaymentGateway : IPaymentGateway
     {
-        public Task<PaymentResponse> ProcessarPagamento(PagamentoDto pagamento)
+        // Pipeline estático para evitar recriação a cada requisição
+        private static readonly ResiliencePipeline<PaymentResponse> _pipeline = CreatePipeline();
+
+        public async Task<PaymentResponse> ProcessarPagamento(PagamentoDto pagamento)
         {
-            var result = Random.Shared.Next(0, 3);
-            
-            if (result == 0)
+            return await _pipeline.ExecuteAsync(async token =>
             {
-                return Task.FromResult(new PaymentResponse(true, "Pagamento processado com sucesso"));
-            }
+                // Simulação da chamada externa
+                var result = Random.Shared.Next(0, 3);
 
-            if (result == 1)
+                if (result == 0)
+                {
+                    return new PaymentResponse(true, "Pagamento processado com sucesso");
+                }
+
+                if (result == 1)
+                {
+                    return new PaymentResponse(false, "Falha ao processar pagamento: Saldo insuficiente");
+                }
+
+                // Simula um timeout
+                throw new TimeoutException("O gateway de pagamento não respondeu a tempo.");
+            });
+        }
+
+        private static ResiliencePipeline<PaymentResponse> CreatePipeline()
+        {
+            // Configuração do Fallback
+            var fallbackOptions = new FallbackStrategyOptions<PaymentResponse>
             {
-                return Task.FromResult(new PaymentResponse(false, "Falha ao processar pagamento: Saldo insuficiente"));
-            }
+                ShouldHandle = new PredicateBuilder<PaymentResponse>()
+                    .Handle<HttpRequestException>()
+                    .Handle<TimeoutException>()
+                    .Handle<TaskCanceledException>(),
 
-            return Task.FromException<PaymentResponse>(new TimeoutException("O gateway de pagamento não respondeu a tempo."));
+                FallbackAction = args =>
+                {
+                    return ValueTask.FromResult(Outcome.FromResult(new PaymentResponse(false, "Erro técnico persistente (Gateway fora do ar). Favor processar manualmente.")));
+                }
+            };
+
+            // Configuração do Retry
+            var retryOptions = new RetryStrategyOptions<PaymentResponse>
+            {
+                ShouldHandle = new PredicateBuilder<PaymentResponse>()
+                    .Handle<HttpRequestException>()
+                    .Handle<TimeoutException>(),
+                BackoffType = DelayBackoffType.Exponential,
+                MaxRetryAttempts = 3,
+                UseJitter = true,
+                Delay = TimeSpan.FromSeconds(2),
+                OnRetry = args =>
+                {
+                    Console.WriteLine($"Tentativa {args.AttemptNumber}. Erro: {args.Outcome.Exception?.Message}");
+                    return default;
+                }
+            };
+
+            // Montagem do Pipeline
+            return new ResiliencePipelineBuilder<PaymentResponse>()
+                .AddFallback(fallbackOptions)
+                .AddRetry(retryOptions)
+                .Build();
         }
     }
 }
