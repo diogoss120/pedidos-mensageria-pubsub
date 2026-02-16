@@ -1,9 +1,10 @@
 using Contracts.Messages;
-
+using Messaging.Publish;
+using Microsoft.Extensions.Options;
+using WorkerPayment.Configuration;
 using WorkerPayment.Data.Entities;
 using WorkerPayment.Data.Repositories.Interfaces;
-using WorkerPayment.Dtos.Request;
-using WorkerPayment.Dtos.Response;
+using WorkerPayment.Mappers;
 using WorkerPayment.Services.Interfaces;
 
 namespace WorkerPayment.Services
@@ -11,36 +12,34 @@ namespace WorkerPayment.Services
     public class PaymentService(
         ILogger<PaymentService> logger,
         IPaymentGateway paymentGateway,
+        IPublishEventBus publishEventBus,
+        IOptions<PubSubConfig> pubSubConfig,
         IPaymentRepository paymentRepository) : IPaymentService
     {
         public async Task ProcessarPagamentoAsync(PedidoCriado pedidoCriado)
         {
             logger.LogInformation("Iniciando processamento de pagamento do pedido {pedidoId}", pedidoCriado.PedidoId);
 
-            var pagamento = new PagamentoDto(
-                pedidoCriado.Pagamento.NumeroCartao,
-                pedidoCriado.Pagamento.Titular,
-                pedidoCriado.Pagamento.Validade,
-                pedidoCriado.Pagamento.Cvv,
-                pedidoCriado.Itens.Sum(i => i.Quantidade * i.Preco));
+            var pagamento = PaymentMapper.ToPagamentoDto(pedidoCriado);
 
             var result = await paymentGateway.ProcessarPagamento(pagamento);
 
-            var payment = new Payment
-            {
-                PedidoId = pedidoCriado.PedidoId,
-                Valor = pedidoCriado.Itens.Sum(i => i.Quantidade * i.Preco),
-                Status = result.Resultado ? "Aprovado" : "Recusado",
-                Detalhes = result.Detalhe,
-                DataProcessamento = DateTime.Now
-            };
+            var payment = PaymentMapper.ToPaymentEntity(pedidoCriado, result);
 
             await paymentRepository.CreateAsync(payment);
 
-            logger.LogInformation("Pagamento do pedido {pedidoId} processado com sucesso", pedidoCriado.PedidoId);
+            await PublishPagamentoProcessadoAsync(payment);
 
-            // TODO: Postar evento do resultado final (PagamentoAprovado ou PagamentoRecusado)
-            // tanto o WorkerNotification quanto o WorkerInventory irão consumir esse evento, e tomar as ações necessárias.
+            logger.LogInformation("Pagamento do pedido {pedidoId} foi {Resultado}", pedidoCriado.PedidoId, payment.Status);
+        }
+
+        private async Task PublishPagamentoProcessadoAsync(Payment payment)
+        {
+            var evento = PaymentMapper.ToPagamentoProcessadoEvent(payment);
+            await publishEventBus.Publish(
+                pubSubConfig.Value.ProjectId,
+                pubSubConfig.Value.TopicId,
+                evento);
         }
     }
 }
