@@ -1,35 +1,35 @@
 using Contracts.Messages;
 using Messaging.Consume;
 using Microsoft.Extensions.Options;
-using WorkerPayment.Configuration;
-using WorkerPayment.Services.Interfaces;
+using WorkerShipping.Configuration;
+using WorkerShipping.Services.Interfaces;
 
-namespace WorkerPayment
+namespace WorkerShipping
 {
     public class Worker(
         ILogger<Worker> logger,
         IConsumeEventBus consumeEventBus,
         IOptions<PubSubConfig> pubSubConfig,
-        IPaymentService paymentService
-        ) : BackgroundService
+        IEnvioService envioService
+    ) : BackgroundService
     {
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                logger.LogInformation("WorkerPayment running at: {time}", DateTimeOffset.Now);
+                logger.LogInformation("WorkerShipping running at: {time}", DateTimeOffset.Now);
 
-                await consumeEventBus.ConsumeAsync<PedidoCriado>(
+                await consumeEventBus.ConsumeAsync<PagamentoProcessado>(
                     pubSubConfig.Value.ProjectId,
                     pubSubConfig.Value.SubscriptionId,
-                    ProcessarPagamento,
-                    stoppingToken); 
+                    NotificarPagamentoProcessado,
+                    stoppingToken);
             }
         }
 
-        private async Task ProcessarPagamento(PedidoCriado message)
+        private async Task NotificarPagamentoProcessado(PagamentoProcessado message)
         {
-            await paymentService.ProcessarPagamentoAsync(message);
+            await envioService.ProcessarEnvioAsync(message);
         }
     }
 }

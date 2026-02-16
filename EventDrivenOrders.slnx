@@ -11,13 +11,13 @@
     <Project Path="Src/Shared/Data/Shared.Data.csproj" />
     <Project Path="Src/Shared/Messaging/Messaging.csproj" />
   </Folder>
-  <Folder Name="/WorkerInventory/">
-    <Project Path="Src/WorkerInventory/WorkerInventory/WorkerInventory.csproj" Id="9ac24b2b-b6a5-47f4-8aaa-a763ff196728" />
-  </Folder>
   <Folder Name="/WorkerNotification/">
     <Project Path="Src/WorkerNotification/Worker.Notification/WorkerNotification.csproj" />
   </Folder>
   <Folder Name="/WorkerPayment/">
     <Project Path="Src/WorkerPayment/Worker.Payment/WorkerPayment.csproj" />
+  </Folder>
+  <Folder Name="/WorkerShipping/">
+    <Project Path="Src/WorkerShipping/WorkerShipping/WorkerShipping.csproj" Id="de6e5153-325f-41e8-8448-a654df71b9a8" />
   </Folder>
 </Solution>
