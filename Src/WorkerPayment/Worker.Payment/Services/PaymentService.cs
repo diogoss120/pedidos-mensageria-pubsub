@@ -20,6 +20,13 @@ namespace WorkerPayment.Services
         {
             logger.LogInformation("Iniciando processamento de pagamento do pedido {pedidoId}", pedidoCriado.PedidoId);
 
+            var existingPayment = await paymentRepository.GetByPedidoIdAsync(pedidoCriado.PedidoId);
+            if (existingPayment != null)
+            {
+                logger.LogWarning("Pagamento para o pedido {PedidoId} já foi processado.", pedidoCriado.PedidoId);
+                return;
+            }
+
             var pagamento = PaymentMapper.ToPagamentoDto(pedidoCriado);
 
             var result = await paymentGateway.ProcessarPagamentoAsync(pagamento);

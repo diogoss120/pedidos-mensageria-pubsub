@@ -11,18 +11,32 @@ O objetivo principal é demonstrar padrões avançados de mensageria, garantindo
 O sistema segue um fluxo reativo para processamento de pedidos:
 
 1.  **API Gateway (Order.Api)**: Recebe a intenção de compra e retorna `202 Accepted`, publicando o evento inicial.
-2.  **Fan-out (Paralelismo)**: O evento de pedido criado dispara simultaneamente o processamento de **Estoque**, **Pagamento** e **Envio de Notificação**.
+2.  **Fan-out (Paralelismo)**: O evento de pedido criado dispara simultaneamente o processamento de **Envio para transportadora**, **Pagamento** e **Envio de Notificação**.
 
 ```mermaid
-graph LR
-    API[Order API] -->|Publica| T1(pedido.criado)
-    T1 --> Sub1[Worker Estoque]
-    T1 --> Sub2[Worker Pagamento]
-    T1 --> Sub3[Worker Notificacao]
-    Sub1 -->|Sucesso| T2(estoque.reservado)
-    Sub2 -->|Sucesso| T3(pagamento.aprovado)
-    Sub3 -->|Sucesso| T4(notificacao.enviada)
+graph TD
+    %% Nós de entrada e Processamento
+    API[Order API] -->|Publica| T1((Pedido Criado))
+    
+    T1 --> Sub2[Worker Payment]
+    T1 --> Sub3[Worker Notification: Criação]
 
+    Sub2 -->|Sucesso| T2((Pagamento Aprovado))
+    
+    T2 --> Sub1[Worker Shipping]
+    T2 --> Sub4[Worker Notification: Pagamento]
+
+    Sub1 -->|Sucesso| T3((Pedido Enviado))
+    
+    T3 --> Sub5[Worker Notification: Envio]
+
+    %% Estilização para ficar "bonito" no GitHub
+    style API fill:#f9f,stroke:#333,stroke-width:2px
+    classDef worker fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#155724
+    classDef event fill:#fff3cd,stroke:#ffc107,stroke-width:2px,stroke-dasharray: 5 5
+
+    class Sub1,Sub2,Sub3,Sub4,Sub5 worker
+    class T1,T2,T3 event
 ```
 
 ## 🎯 Desafios Técnicos (Roadmap)
@@ -30,7 +44,7 @@ graph LR
 O projeto está estruturado em 4 níveis de complexidade crescente:
 
 - 🟢 **Fundamental**: Setup do Pub/Sub, publicação de eventos e consumo básico.
-- 🟡 **Resiliência**: Implementação de *Exponential Backoff*, *Dead Letter Queues (DLQ)* e **Idempotência**.
+- 🟡 **Resiliência**: Implementação de *Exponential Backoff* e **Idempotência**.
 - 🔵 **Fan-out**: Distribuição de um único evento para múltiplos consumidores independentes.
 
 
@@ -71,7 +85,7 @@ Todos os eventos derivam da estrutura base do pedido. O `correlationId` é obrig
 
 - **Runtime**: .NET 8/9
 - **Messaging**: Google Cloud Pub/Sub
-- **Database**: Google Cloud Firestore
+- **Database**: MongoDB
 - **Infrastructure**: Docker & Docker Compose
 
 ## 📋 Regras de Ouro do Lab

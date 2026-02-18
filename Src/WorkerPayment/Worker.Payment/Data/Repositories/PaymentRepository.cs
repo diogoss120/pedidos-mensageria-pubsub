@@ -17,4 +17,9 @@ public class PaymentRepository : IPaymentRepository
     {
         await _paymentsCollection.InsertOneAsync(payment);
     }
+
+    public async Task<Payment?> GetByPedidoIdAsync(Guid pedidoId)
+    {
+        return await _paymentsCollection.Find(p => p.PedidoId == pedidoId).FirstOrDefaultAsync();
+    }
 }

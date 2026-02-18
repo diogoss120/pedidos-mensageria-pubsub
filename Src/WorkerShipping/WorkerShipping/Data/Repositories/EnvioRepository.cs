@@ -17,4 +17,9 @@ public class EnvioRepository : IEnvioRepository
     {
         await _enviosCollection.InsertOneAsync(envio);
     }
+
+    public async Task<Envio?> GetByPedidoIdAsync(Guid pedidoId)
+    {
+        return await _enviosCollection.Find(p => p.PedidoId == pedidoId).FirstOrDefaultAsync();
+    }
 }

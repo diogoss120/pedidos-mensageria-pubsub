@@ -17,6 +17,13 @@ public class EnvioService(
     {
         logger.LogInformation("Iniciando processamento de envio para o pedido {PedidoId}", pagamento.PedidoId);
 
+        var existingEnvio = await envioRepository.GetByPedidoIdAsync(pagamento.PedidoId);
+        if (existingEnvio != null)
+        {
+            logger.LogWarning("Envio para o pedido {PedidoId} já foi processado.", pagamento.PedidoId);
+            return;
+        }
+
         var envioDto = EnvioMapper.ToEnvioDto(pagamento);
 
         var response = await correiosGateway.ProcessarEnvioAsync(envioDto);
