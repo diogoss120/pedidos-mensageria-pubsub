@@ -5,4 +5,5 @@ public enum PaymentStatus
     Aprovado,
     Recusado,       // Cartão sem saldo, CVV inválido, etc.
     ErroTecnico,    // Gateway fora do ar (Fallback acionado)
+    Processando     // Pagamento em processamento (Idempotência)
 }

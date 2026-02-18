@@ -24,8 +24,14 @@ public class EnvioRepository : IEnvioRepository
         }
         catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
         {
-            // Envio já existe, ignorar erro para garantir idempotência
+            // Envio já existe, lançar exceção para permitir controle de concorrência no Service
+            throw new InvalidOperationException("Envio duplicado detectado durante a criação.");
         }
+    }
+
+    public async Task UpdateAsync(Envio envio)
+    {
+        await _enviosCollection.ReplaceOneAsync(e => e.PedidoId == envio.PedidoId, envio);
     }
 
     public async Task<Envio?> GetByPedidoIdAsync(Guid pedidoId)

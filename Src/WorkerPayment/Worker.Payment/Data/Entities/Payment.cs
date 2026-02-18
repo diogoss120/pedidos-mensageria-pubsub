@@ -1,7 +1,7 @@
+using Contracts.Enums;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Shared.Data.Entities;
-using WorkerPayment.Data.Enums;
 
 namespace WorkerPayment.Data.Entities;
 

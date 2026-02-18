@@ -24,8 +24,17 @@ public class PaymentRepository : IPaymentRepository
         }
         catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
         {
-            // Pagamento já existe, ignorar erro para garantir idempotência
+            // Pagamento já existe, lançar exceção ou retornar false seria ideal, 
+            // mas manteremos o comportamento de ignorar por enquanto, 
+            // pois o Service fará a verificação antes.
+            // Para o fluxo "Processando", a falha aqui indica concorrência.
+            throw new InvalidOperationException("Pagamento duplicado detectado durante a criação.");
         }
+    }
+
+    public async Task UpdateAsync(Payment payment)
+    {
+        await _paymentsCollection.ReplaceOneAsync(p => p.PedidoId == payment.PedidoId, payment);
     }
 
     public async Task<Payment?> GetByPedidoIdAsync(Guid pedidoId)

@@ -1,11 +1,10 @@
 ﻿using WorkerPayment.Dtos.Request;
 using WorkerPayment.Dtos.Response;
 using WorkerPayment.Services.Interfaces;
-using WorkerPayment.Data.Enums;
-
 using Polly;
 using Polly.Fallback;
 using Polly.Retry;
+using Contracts.Enums;
 
 namespace WorkerPayment.Services
 {

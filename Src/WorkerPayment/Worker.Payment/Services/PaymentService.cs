@@ -1,3 +1,4 @@
+using Contracts.Enums;
 using Contracts.Messages;
 using Messaging.Publish;
 using Microsoft.Extensions.Options;
@@ -23,17 +24,45 @@ namespace WorkerPayment.Services
             var existingPayment = await paymentRepository.GetByPedidoIdAsync(pedidoCriado.PedidoId);
             if (existingPayment != null)
             {
-                logger.LogWarning("Pagamento para o pedido {PedidoId} já foi processado.", pedidoCriado.PedidoId);
+                if (existingPayment.Status == PaymentStatus.Processando)
+                {
+                    logger.LogWarning("Pagamento para o pedido {PedidoId} está em processamento.", pedidoCriado.PedidoId);
+                    return;
+                }
+                
+                logger.LogWarning("Pagamento para o pedido {PedidoId} já foi processado (Status: {Status}).", pedidoCriado.PedidoId, existingPayment.Status);
                 return;
             }
 
-            var pagamento = PaymentMapper.ToPagamentoDto(pedidoCriado);
+            // Cria o registro inicial com status "Processando"
+            var payment = new Payment
+            {
+                PedidoId = pedidoCriado.PedidoId,
+                Valor = pedidoCriado.Itens.Sum(i => i.Quantidade * i.Preco),
+                Status = PaymentStatus.Processando,
+                Detalhes = "Processamento iniciado",
+                DataProcessamento = DateTime.Now
+            };
 
-            var result = await paymentGateway.ProcessarPagamentoAsync(pagamento);
+            try
+            {
+                await paymentRepository.CreateAsync(payment);
+            }
+            catch (Exception)
+            {
+                logger.LogWarning("Concorrência detectada ao criar pagamento para o pedido {PedidoId}. Abortando execução.", pedidoCriado.PedidoId);
+                return;
+            }
 
-            var payment = PaymentMapper.ToPaymentEntity(pedidoCriado, result);
+            var pagamentoDto = PaymentMapper.ToPagamentoDto(pedidoCriado);
+            var result = await paymentGateway.ProcessarPagamentoAsync(pagamentoDto);
 
-            await paymentRepository.CreateAsync(payment);
+            // Atualiza o registro com o resultado final
+            payment.Status = result.Status;
+            payment.Detalhes = result.Detalhe;
+            payment.DataProcessamento = DateTime.Now;
+
+            await paymentRepository.UpdateAsync(payment);
 
             await PublishPagamentoProcessadoAsync(payment);
 

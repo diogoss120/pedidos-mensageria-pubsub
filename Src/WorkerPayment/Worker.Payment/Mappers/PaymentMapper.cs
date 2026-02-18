@@ -2,7 +2,6 @@ using Contracts.Messages;
 using WorkerPayment.Data.Entities;
 using WorkerPayment.Dtos.Request;
 using WorkerPayment.Dtos.Response;
-using WorkerPayment.Data.Enums;
 
 
 namespace WorkerPayment.Mappers

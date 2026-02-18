@@ -1,4 +1,5 @@
-﻿using WorkerPayment.Data.Enums;
+﻿
+using Contracts.Enums;
 
 namespace WorkerPayment.Dtos.Response
 {
