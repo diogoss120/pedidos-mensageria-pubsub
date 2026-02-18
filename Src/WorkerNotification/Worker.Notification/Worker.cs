@@ -18,17 +18,25 @@ namespace WorkerNotification
             {
                 logger.LogInformation("WorkerNotification running at: {time}", DateTimeOffset.Now);
 
-                await consumeEventBus.ConsumeAsync<PedidoCriado>(
+                var taskPedidoCriado = consumeEventBus.ConsumeAsync<PedidoCriado>(
                     pubSubConfig.Value.ProjectId,
                     pubSubConfig.Value.SubscriptionIdPedidoCriado,
                     NotificarPedidoCriado,
                     stoppingToken);
 
-                await consumeEventBus.ConsumeAsync<PagamentoProcessado>(
+                var taskPagamentoProcessado = consumeEventBus.ConsumeAsync<PagamentoProcessado>(
                     pubSubConfig.Value.ProjectId,
                     pubSubConfig.Value.SubscriptionIdPagamentoProcessado,
                     NotificarPagamentoProcessado,
                     stoppingToken);
+
+                var taskPedidoDespachado = consumeEventBus.ConsumeAsync<PedidoDespachado>(
+                    pubSubConfig.Value.ProjectId,
+                    pubSubConfig.Value.SubscriptionIdPedidoDespachado,
+                    NotificarPedidoDespachado,
+                    stoppingToken);
+
+                await Task.WhenAll(taskPedidoCriado, taskPagamentoProcessado, taskPedidoDespachado);
             }
         }
 
@@ -40,6 +48,11 @@ namespace WorkerNotification
         private async Task NotificarPagamentoProcessado(PagamentoProcessado message)
         {
             await notificationService.NotificarPagamentoProcessadoAsync(message);
+        }
+
+        private async Task NotificarPedidoDespachado(PedidoDespachado message)
+        {
+            await notificationService.NotificarPedidoDespachadoAsync(message);
         }
     }
 }

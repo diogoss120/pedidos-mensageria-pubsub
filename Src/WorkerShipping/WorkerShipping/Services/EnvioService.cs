@@ -1,17 +1,20 @@
 using Contracts.Messages;
+using Messaging.Publish;
+using Microsoft.Extensions.Options;
+using WorkerShipping.Configuration;
+using WorkerShipping.Data.Enums;
 using WorkerShipping.Data.Repositories.Interfaces;
 using WorkerShipping.Mappers;
 using WorkerShipping.Services.Interfaces;
-
-using WorkerShipping.Data.Enums;
-using WorkerShipping.Services;
 
 namespace WorkerShipping.Services;
 
 public class EnvioService(
     ILogger<EnvioService> logger,
     IEnvioRepository envioRepository,
-    ICorreiosGateway correiosGateway) : IEnvioService
+    ICorreiosGateway correiosGateway,
+    IPublishEventBus publishEventBus,
+    IOptions<PubSubConfig> pubSubConfig) : IEnvioService
 {
     public async Task ProcessarEnvioAsync(PagamentoProcessado pagamento)
     {
@@ -35,6 +38,18 @@ public class EnvioService(
         if (response.Status == ShippingStatus.Despachado)
         {
             logger.LogInformation("Envio do pedido {PedidoId} criado com código de rastreio {CodigoRastreio}", pagamento.PedidoId, envio.CodigoRastreio);
+
+            var pedidoDespachado = new PedidoDespachado
+            {
+                PedidoId = pagamento.PedidoId,
+                CodigoRastreio = envio.CodigoRastreio,
+                DataEnvio = envio.DataPostagem
+            };
+
+            await publishEventBus.Publish(
+                pubSubConfig.Value.ProjectId,
+                pubSubConfig.Value.TopicId,
+                pedidoDespachado);
         }
         else
         {

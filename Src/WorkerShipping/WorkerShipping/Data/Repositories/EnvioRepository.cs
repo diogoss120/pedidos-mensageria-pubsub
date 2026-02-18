@@ -11,11 +11,21 @@ public class EnvioRepository : IEnvioRepository
     public EnvioRepository(IMongoDatabase database)
     {
         _enviosCollection = database.GetCollection<Envio>("Envios");
+        var indexKeys = Builders<Envio>.IndexKeys.Ascending(p => p.PedidoId);
+        var indexOptions = new CreateIndexOptions { Unique = true };
+        _enviosCollection.Indexes.CreateOne(new CreateIndexModel<Envio>(indexKeys, indexOptions));
     }
 
     public async Task CreateAsync(Envio envio)
     {
-        await _enviosCollection.InsertOneAsync(envio);
+        try
+        {
+            await _enviosCollection.InsertOneAsync(envio);
+        }
+        catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+        {
+            // Envio já existe, ignorar erro para garantir idempotência
+        }
     }
 
     public async Task<Envio?> GetByPedidoIdAsync(Guid pedidoId)

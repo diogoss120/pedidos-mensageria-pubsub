@@ -5,6 +5,7 @@ using WorkerShipping.Data.Repositories;
 using WorkerShipping.Data.Repositories.Interfaces;
 using WorkerShipping.Services;
 using WorkerShipping.Services.Interfaces;
+using Messaging;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -22,6 +23,8 @@ if (pubSubConfig is null)
 builder.Services.AddSingleton<IEnvioRepository, EnvioRepository>();
 builder.Services.AddSingleton<IEnvioService, EnvioService>();
 builder.Services.AddSingleton<ICorreiosGateway, CorreiosGateway>();
+
+builder.Services.AddMessaging();
 
 builder.Services.AddHostedService<Worker>();
 

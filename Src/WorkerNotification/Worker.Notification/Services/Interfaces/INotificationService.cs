@@ -7,5 +7,7 @@ namespace WorkerNotification.Services.Interfaces
         Task NotificarPedidoCriadoAsync(PedidoCriado message);
 
         Task NotificarPagamentoProcessadoAsync(PagamentoProcessado message);
+        
+        Task NotificarPedidoDespachadoAsync(PedidoDespachado message);
     }
 }

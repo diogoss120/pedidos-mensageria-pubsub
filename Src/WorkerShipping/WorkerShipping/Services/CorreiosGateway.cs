@@ -1,9 +1,9 @@
 using Polly;
 using Polly.Fallback;
 using Polly.Retry;
+using WorkerShipping.Data.Enums;
 using WorkerShipping.Dtos.Request;
 using WorkerShipping.Dtos.Response;
-using WorkerShipping.Data.Enums;
 using WorkerShipping.Services.Interfaces;
 
 namespace WorkerShipping.Services;

@@ -51,5 +51,24 @@ namespace WorkerNotification.Services
 
             return Task.FromResult(sb.ToString());
         }
+
+        public Task<string> NotificarAsync(PedidoDespachado pedido)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Olá,");
+            sb.AppendLine($"O pedido {pedido.PedidoId} foi despachado!");
+            sb.AppendLine($"Código de Rastreio: {pedido.CodigoRastreio}");
+            sb.AppendLine($"Data de Envio: {pedido.DataEnvio}");
+
+            sb.AppendLine();
+            sb.AppendLine("Você pode acompanhar a entrega pelo site dos Correios.");
+            sb.AppendLine();
+            sb.AppendLine("Atenciosamente,");
+            sb.AppendLine("Equipe EventDrivenOrders");
+
+            logger.LogWarning("\n\n{EmailContent}", sb.ToString());
+
+            return Task.FromResult(sb.ToString());
+        }
     }
 }
