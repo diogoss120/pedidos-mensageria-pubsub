@@ -66,7 +66,7 @@ namespace WorkerPayment.Services
 
             await PublishPagamentoProcessadoAsync(payment);
 
-            logger.LogInformation("Pagamento do pedido {pedidoId} foi {Resultado}", pedidoCriado.PedidoId, payment.Status);
+            logger.LogInformation("Pagamento do pedido {pedidoId} foi {Resultado}. Motivo: {Motivo}", pedidoCriado.PedidoId, payment.Status, payment.Detalhes);
         }
 
         private async Task PublishPagamentoProcessadoAsync(Payment payment)

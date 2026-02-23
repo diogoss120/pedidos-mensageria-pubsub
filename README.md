@@ -82,7 +82,7 @@ Todos os eventos derivam da estrutura base do pedido. O `correlationId` é obrig
 
 ## 🛠️ Tech Stack
 
-- **Runtime**: .NET 8/9
+- **Runtime**: .NET 10
 - **Messaging**: Google Cloud Pub/Sub
 - **Database**: MongoDB
 - **Infrastructure**: Docker & Docker Compose

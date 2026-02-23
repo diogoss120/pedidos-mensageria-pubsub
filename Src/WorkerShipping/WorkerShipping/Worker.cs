@@ -22,12 +22,12 @@ namespace WorkerShipping
                 await consumeEventBus.ConsumeAsync<PagamentoProcessado>(
                     pubSubConfig.Value.ProjectId,
                     pubSubConfig.Value.SubscriptionId,
-                    NotificarPagamentoProcessado,
+                    ProcessarEnvio,
                     stoppingToken);
             }
         }
 
-        private async Task NotificarPagamentoProcessado(PagamentoProcessado message)
+        private async Task ProcessarEnvio(PagamentoProcessado message)
         {
             await envioService.ProcessarEnvioAsync(message);
         }

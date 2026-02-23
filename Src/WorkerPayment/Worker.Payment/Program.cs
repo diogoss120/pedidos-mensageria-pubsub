@@ -15,14 +15,8 @@ builder.Services.AddMessaging();
 builder.Services.AddMongoDb(builder.Configuration);
 
 // PubSub
-var pubSubConfig = builder.Configuration.GetSection("PubSubConfig").Get<PubSubConfig>();
-
-if (pubSubConfig is null)
-{
-    throw new InvalidOperationException("PubSubConfig section is missing or invalid in appsettings.json");
-}
-
-builder.Services.AddSingleton(pubSubConfig);
+builder.Services.AddOptions();
+builder.Services.Configure<PubSubConfig>(builder.Configuration.GetSection(PubSubConfig.SectionName));
 
 builder.Services.AddSingleton<IPaymentGateway, PaymentGateway>();
 builder.Services.AddSingleton<IPaymentRepository, PaymentRepository>();
